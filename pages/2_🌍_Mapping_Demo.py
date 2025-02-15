@@ -13,13 +13,12 @@
 # limitations under the License.
 
 import streamlit as st
-import inspect
-import textwrap
 import pandas as pd
-import pydeck as pdk
+import pydeck as pdk  # type: ignore[import]
 from utils import show_code
 
 from urllib.error import URLError
+
 
 def mapping_demo():
     @st.cache_data
@@ -101,6 +100,7 @@ def mapping_demo():
         """
             % e.reason
         )
+
 
 st.set_page_config(page_title="Mapping Demo", page_icon="🌍")
 st.markdown("# Mapping Demo")

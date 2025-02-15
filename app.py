@@ -1,7 +1,6 @@
 import argparse
 import logging
 from dotenv import load_dotenv
-import streamlit as st
 
 from naomi.Hello import run
 
@@ -19,7 +18,6 @@ def parse_args():
 
 def main():
     load_dotenv()
-    st.set_page_config(page_title="AI Chat App", page_icon="🤖")
     args = parse_args()
 
     logging.basicConfig(

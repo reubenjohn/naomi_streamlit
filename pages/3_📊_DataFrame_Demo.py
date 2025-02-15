@@ -13,13 +13,12 @@
 # limitations under the License.
 
 import streamlit as st
-import inspect
-import textwrap
 import pandas as pd
 import altair as alt
 from utils import show_code
 
 from urllib.error import URLError
+
 
 def data_frame_demo():
     @st.cache_data
@@ -62,6 +61,7 @@ def data_frame_demo():
         """
             % e.reason
         )
+
 
 st.set_page_config(page_title="DataFrame Demo", page_icon="📊")
 st.markdown("# DataFrame Demo")

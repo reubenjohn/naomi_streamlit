@@ -13,11 +13,10 @@
 # limitations under the License.
 
 import streamlit as st
-import inspect
-import textwrap
 import time
 import numpy as np
 from utils import show_code
+
 
 def plotting_demo():
     progress_bar = st.sidebar.progress(0)
