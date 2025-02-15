@@ -17,6 +17,7 @@ from streamlit.logger import get_logger
 
 LOGGER = get_logger(__name__)
 
+
 def run():
     st.set_page_config(
         page_title="Hello",
@@ -41,7 +42,8 @@ def run():
         ### See more complex demos
         - Use a neural net to [analyze the Udacity Self-driving Car Image
           Dataset](https://github.com/streamlit/demo-self-driving)
-        - Explore a [New York City rideshare dataset](https://github.com/streamlit/demo-uber-nyc-pickups)
+        - Explore a
+         [New York City rideshare dataset](https://github.com/streamlit/demo-uber-nyc-pickups)
     """
     )
 
