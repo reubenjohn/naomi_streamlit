@@ -12,8 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
 import streamlit as st
 from streamlit.logger import get_logger
+
+from utils import handle_login
 
 LOGGER = get_logger(__name__)
 
@@ -24,9 +27,13 @@ def run():
         page_icon="👋",
     )
 
+    if not handle_login():
+        exit(0)
+
     st.write("# Welcome to Streamlit! 👋")
 
-    st.sidebar.success("Select a demo above.")
+    with st.sidebar:
+        st.success("Select a demo above.")
 
     st.markdown(
         """

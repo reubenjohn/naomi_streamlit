@@ -25,3 +25,20 @@ def show_code(demo):
         st.markdown("## Code")
         sourcelines, _ = inspect.getsourcelines(demo)
         st.code(textwrap.dedent("".join(sourcelines[1:])))
+
+
+def handle_login():
+    if st.experimental_user.get("is_logged_in", False):
+        with st.sidebar:
+            st.write(f"Hello, {st.experimental_user.name}!")
+            if st.button("Log out"):
+                st.logout()
+        return True
+
+    with st.sidebar:
+        st.error("You need to log in to continue.")
+        if st.button("Log in"):
+            st.login()
+
+    st.stop()
+    return False

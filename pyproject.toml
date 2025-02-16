@@ -14,6 +14,7 @@ swarm = { git = "https://github.com/openai/swarm.git", rev = "9db581cecaacea0d46
 instructor = "^1.6.4"
 streamlit = "^1.42.0"
 SQLAlchemy = "^2.0.36"
+Authlib = "^1.4.1"
 
 
 [tool.poetry.group.dev.dependencies]

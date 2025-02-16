@@ -6,6 +6,21 @@ This project highlights Streamlit's new multipage app functionality. Now deploya
 
 ![In-use Animation](https://github.com/streamlit/hello/blob/main/mpa-hero.gif?raw=true "In-use Animation")
 
+## Project Setup
+
+Configuring OAuth with streamlit see [docs](https://docs.streamlit.io/develop/concepts/connections/authentication).
+
+And define the .streamlit/secrets.toml file accordingly:
+```toml
+[auth]
+redirect_uri = "http://localhost:8088/oauth2callback"
+cookie_secret = "..."
+client_id = "..."
+client_secret = "."
+server_metadata_url = "..."
+```
+
+
 ## How to run this project locally
 
 - pip install -r requirements.txt

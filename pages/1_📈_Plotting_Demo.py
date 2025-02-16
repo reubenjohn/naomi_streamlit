@@ -12,10 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import streamlit as st
+
 import time
 import numpy as np
-from utils import show_code
+from utils import handle_login, show_code
+import streamlit as st
 
 
 def plotting_demo():
@@ -41,6 +42,10 @@ def plotting_demo():
 
 
 st.set_page_config(page_title="Plotting Demo", page_icon="📈")
+
+if not handle_login():
+    exit(0)
+
 st.markdown("# Plotting Demo")
 st.sidebar.header("Plotting Demo")
 st.write(

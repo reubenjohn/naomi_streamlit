@@ -15,7 +15,7 @@
 import streamlit as st
 import pandas as pd
 import pydeck as pdk  # type: ignore[import]
-from utils import show_code
+from utils import handle_login, show_code
 
 from urllib.error import URLError
 
@@ -103,6 +103,11 @@ def mapping_demo():
 
 
 st.set_page_config(page_title="Mapping Demo", page_icon="🌍")
+
+if not handle_login():
+    exit(0)
+
+
 st.markdown("# Mapping Demo")
 st.sidebar.header("Mapping Demo")
 st.write(
