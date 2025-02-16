@@ -8,6 +8,8 @@ This project highlights Streamlit's new multipage app functionality. Now deploya
 
 ## Project Setup
 
+For instructions on setting up the project for development and contributions, see [CONTRIBUTING.md](CONTRIBUTING.md)
+
 Configuring OAuth with streamlit see [docs](https://docs.streamlit.io/develop/concepts/connections/authentication).
 
 And define the .streamlit/secrets.toml file accordingly:
@@ -18,6 +20,23 @@ cookie_secret = "..."
 client_id = "..."
 client_secret = "."
 server_metadata_url = "..."
+```
+
+To set up the environment variables, create a `.env` file in the root directory of your project (See [.env.example](.env.example)) and add the following lines:
+
+```shell
+OPENAI_BASE_URL=https://your_openai_endpoint
+OPENAI_API_KEY=your_openai_api_key_here
+OPENAI_BASE_MODEL=your_model_name
+```
+
+Note that the OpenAI endpoint can be any endpoint that implements the OpenAI API (eg. Ollama).
+Alternatively, you can provide the `--openai_base_url` and `--openai_api_key` arguments when running the CLI:
+
+```bash
+$ python -m token_world --openai_base_url http://192.168.1.199:11434/v1 --openai_api_key your_openai_api_key_here
+#or
+$ token_world --openai_base_url http://192.168.1.199:11434/v1 --openai_api_key your_openai_api_key_here
 ```
 
 

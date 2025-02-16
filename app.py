@@ -2,7 +2,7 @@ import argparse
 import logging
 from dotenv import load_dotenv
 
-from naomi.Hello import run
+from naomi.home import run
 
 
 def parse_args():
