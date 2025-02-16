@@ -2,6 +2,7 @@ import argparse
 import logging
 from dotenv import load_dotenv
 
+from naomi.db import initialize_db
 from naomi.home import run
 
 
@@ -23,6 +24,9 @@ def main():
     logging.basicConfig(
         level=args.log_level.upper(), format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     )
+
+    # Initialize database
+    initialize_db()
 
     run()
 
