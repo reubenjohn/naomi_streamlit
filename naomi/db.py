@@ -37,14 +37,14 @@ def session_scope():
 
 
 class Conversation(Base):
-    __tablename__ = "storylines"
+    __tablename__ = "conversation"
     id = Column(Integer, primary_key=True, nullable=False)
     name = Column(String, nullable=False)
     description = Column(Text, nullable=False)
 
 
 class MessageModel(Base):
-    __tablename__ = "messages"
+    __tablename__ = "message"
     conversation_id = Column(Integer, primary_key=True, nullable=False)
     id = Column(Integer, primary_key=True, nullable=False)
     content = Column(Text, nullable=False)
@@ -63,14 +63,14 @@ class MessageModel(Base):
 
 
 class SummaryModel(Base):
-    __tablename__ = "summaries"
+    __tablename__ = "summary"
     conversation_id = Column(Integer, primary_key=True, nullable=False)
     summary_until_id = Column(Integer, primary_key=True)
     content = Column(Text, nullable=False)
 
 
 class AgentGoalModel(Base):
-    __tablename__ = "agent_goals"
+    __tablename__ = "agent_goal"
     name = Column(String, primary_key=True, nullable=False)
     description = Column(Text, nullable=False)
     completed = Column(Boolean, nullable=False)
@@ -78,7 +78,7 @@ class AgentGoalModel(Base):
 
 
 class PropertyModel(Base):
-    __tablename__ = "properties"
+    __tablename__ = "property"
     key = Column(String, primary_key=True, nullable=False)
     value = Column(Text, nullable=False)
 
