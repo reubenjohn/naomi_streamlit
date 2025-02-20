@@ -173,11 +173,6 @@ def run():
     if not handle_login():
         exit(0)
 
-    st.write("# Welcome to Streamlit! 👋")
-
-    with st.sidebar:
-        st.success("Select a demo above.")
-
     draw_chat()
 
 
