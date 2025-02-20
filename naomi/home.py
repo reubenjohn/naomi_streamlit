@@ -19,7 +19,14 @@ import streamlit as st
 from streamlit.logger import get_logger
 from swarm import Agent  # type: ignore[import]
 
-from naomi.db import DEFAULT_CONVERSATION_ID, MessageModel, add_message_to_db, session_scope
+from naomi.db import (
+    DEFAULT_CONVERSATION_ID,
+    MessageModel,
+    add_message_to_db,
+    delete_messages,
+    fetch_messages,
+    session_scope,
+)
 from llm.llm import handle_base_model_arg, llm_client
 from llm.stream_processing import MessageStream, ToolStream, parse_streaming_response
 from utils import handle_login
@@ -27,49 +34,32 @@ from utils import handle_login
 LOGGER = get_logger(__name__)
 
 
-def generate_llm_response(model: Optional[str] = None) -> Iterator[str]:
+def generate_llm_response(messages, model: Optional[str] = None) -> Iterator[str]:
     model = handle_base_model_arg(model)
+    agent = Agent(
+        name="Creative Assistant",
+        model=model,
+        instructions="You are a helpful assistant.",
+        stream=True,
+    )
+    return llm_client().run(agent, messages, stream=True)
 
-    try:
-        agent = Agent(
-            name="Creative Assistant",
-            model=model,
-            instructions="You are a helpful assistant.",
-            stream=True,
-        )
 
-        with session_scope() as session:
-            messages = (
-                session.query(MessageModel)
-                .where(MessageModel.conversation_id == DEFAULT_CONVERSATION_ID)
-                .order_by(MessageModel.id)
-                .all()
-            )
-            message_contents = [msg.content_dict for msg in messages]
-
-            chunks = llm_client().run(agent, message_contents, stream=True)
-            for stream in parse_streaming_response(chunks):
-                if isinstance(stream, MessageStream):
-                    for chunk in stream.content_stream:
-                        yield chunk
-                elif isinstance(stream, ToolStream):
-                    logging.debug(f"Tool Use: {stream}")
-            logging.info("Response generation complete")
-    except Exception as e:
-        logging.error(f"Error generating response: {e}", exc_info=True)
-        yield f"An error '{e}' occurred while generating the response. Please try again."
+def process_llm_response(chunks):
+    for stream in parse_streaming_response(chunks):
+        if isinstance(stream, MessageStream):
+            for chunk in stream.content_stream:
+                yield chunk
+        elif isinstance(stream, ToolStream):
+            logging.debug(f"Tool Use: {stream}")
+    logging.info("Response generation complete")
 
 
 def draw_chat():
     st.header("💬 Chat")
 
     with session_scope() as session:
-        messages = (
-            session.query(MessageModel)
-            .where(MessageModel.conversation_id == DEFAULT_CONVERSATION_ID)
-            .order_by(MessageModel.id)
-            .all()
-        )
+        messages = fetch_messages(session, DEFAULT_CONVERSATION_ID)
 
         for message in messages:
             msg = message.content_dict
@@ -81,15 +71,7 @@ def draw_chat():
                     with col2:
                         if st.button("🗑️", key=f"delete_{message.id}"):
                             logging.info(f"Deleting message {message.id}")
-                            session.query(MessageModel).where(
-                                MessageModel.conversation_id == DEFAULT_CONVERSATION_ID
-                            ).where(MessageModel.id >= message.id).delete()
-                            # session.query(SummaryModel).where(
-                            #     SummaryModel.conversation_id == DEFAULT_CONVERSATION_ID
-                            # ).where(
-                            #     SummaryModel.summary_until_id >= message.id
-                            # ).delete()
-                            session.commit()
+                            delete_messages(session, DEFAULT_CONVERSATION_ID, message.id)
                             st.rerun()
                             return
                     st.markdown(msg["content"])
@@ -99,7 +81,6 @@ def draw_chat():
     if prompt := st.chat_input("Type your message here..."):
         with st.chat_message("user"):
             st.markdown(prompt)
-        # Add user message to chat history
         user_message = {"role": "user", "content": prompt}
         with session_scope() as session:
             add_message_to_db(user_message, session, DEFAULT_CONVERSATION_ID)
@@ -119,37 +100,23 @@ def draw_assistant_message(existing_message: Optional[MessageModel], session):
     with col2:
         if existing_message and st.button("🗑️", key=f"delete_{message_id}"):
             logging.info(f"Deleting message {existing_message.id}")
-            session.query(MessageModel).where(
-                MessageModel.conversation_id == DEFAULT_CONVERSATION_ID
-            ).filter(MessageModel.id >= existing_message.id).delete()
-            session.commit()
+            delete_messages(session, DEFAULT_CONVERSATION_ID, existing_message.id)
             st.rerun()
             return
 
     with col3:
         regenerate = st.button("🔃 Regenerate", key=f"regenerate_{message_id}")
 
-    # conversation = draw_conversation_summary(session)
-    # if not conversation:
-    #     st.error("Summary required...")
-    #     st.rerun()
-    #     return
-
     if existing_message and not regenerate:
         st.markdown(existing_message.content_dict["content"])
         return
 
     if existing_message:
-        session.query(MessageModel).where(
-            MessageModel.conversation_id == DEFAULT_CONVERSATION_ID
-        ).where(MessageModel.id >= existing_message.id).delete()
-        # session.query(SummaryModel).where(
-        #     SummaryModel.conversation_id == DEFAULT_CONVERSATION_ID
-        # ).where(SummaryModel.summary_until_id >= existing_message.id).delete()
-        session.commit()
+        delete_messages(session, DEFAULT_CONVERSATION_ID, existing_message.id)
 
-    response = generate_llm_response()
-    response_text = str(st.write_stream(response))
+    messages = [msg.content_dict for msg in fetch_messages(session, DEFAULT_CONVERSATION_ID)]
+    response = generate_llm_response(messages)
+    response_text = str(st.write_stream(process_llm_response(response)))
     if not existing_message:
         with st.spinner("Generating response..."):
             logging.debug(f"AI response: {response_text}")

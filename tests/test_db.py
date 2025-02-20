@@ -7,6 +7,8 @@ from sqlalchemy.orm import sessionmaker
 from naomi.db import (
     Base,
     MessageModel,
+    delete_messages,
+    fetch_messages,
     initialize_db,
     save_agent_goal,
     add_message_to_db,
@@ -56,6 +58,26 @@ def patched_session_scope(db_session):
         yield  # Ensures patch is applied for the duration of the test
 
 
+@pytest.fixture(scope="function")
+def message_data():
+    return {"content": "Hello, NAOMI!"}
+
+
+@pytest.fixture(scope="function")
+def message_data2():
+    return {"content": "How are you?"}
+
+
+@pytest.fixture(scope="function")
+def create_messages(db_session, message_data, message_data2):
+    message1 = MessageModel(conversation_id=1, id=1, content=json.dumps(message_data))
+    message2 = MessageModel(conversation_id=1, id=2, content=json.dumps(message_data2))
+    db_session.add(message1)
+    db_session.add(message2)
+    db_session.commit()
+    return message1, message2
+
+
 @patch("naomi.db.engine", new_callable=lambda: engine)
 def test_initialize_db_and_get_all_tables(_):
     Base.metadata.drop_all(bind=engine)
@@ -66,8 +88,7 @@ def test_initialize_db_and_get_all_tables(_):
     }
 
 
-def test_add_message(db_session):
-    message_data = {"content": "Hello, NAOMI!"}
+def test_add_message(db_session, message_data):
     result = add_message_to_db(message_data, db_session, conversation_id=1)
     db_session.commit()
     assert result.id == 1
@@ -76,8 +97,7 @@ def test_add_message(db_session):
     assert saved_message.content_dict == message_data
 
 
-def test_message_content_functions(db_session):
-    message_data = {"content": "Hello, NAOMI!"}
+def test_message_content_functions(db_session, message_data):
     message = MessageModel(conversation_id=1, id=1, content=json.dumps(message_data))
     db_session.add(message)
     db_session.commit()
@@ -85,6 +105,20 @@ def test_message_content_functions(db_session):
     assert saved_message.content_dict == message_data
     assert saved_message.content_dumps == json.dumps(message_data)
     assert saved_message.content_val == "Hello, NAOMI!"
+
+
+def test_fetch_messages(db_session, create_messages, message_data, message_data2):
+    messages = fetch_messages(db_session, conversation_id=1)
+    assert len(messages) == 2
+    assert messages[0].content_dict == message_data
+    assert messages[1].content_dict == message_data2
+
+
+def test_delete_messages(db_session, create_messages, message_data):
+    delete_messages(db_session, conversation_id=1, message_id=2)
+    messages = fetch_messages(db_session, conversation_id=1)
+    assert len(messages) == 1
+    assert messages[0].content_dict == message_data
 
 
 def test_save_and_load_agent_goal(db_session):

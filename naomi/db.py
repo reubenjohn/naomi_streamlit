@@ -83,7 +83,7 @@ def initialize_db():
 
 
 # Save message to database
-def add_message_to_db(message: Message, session, conversation_id: int):
+def add_message_to_db(message: Message, session, conversation_id: int) -> MessageModel:
     max_id = (
         session.query(func.max(MessageModel.id))
         .where(MessageModel.conversation_id == conversation_id)
@@ -98,6 +98,22 @@ def add_message_to_db(message: Message, session, conversation_id: int):
     )
     session.add(message_model)
     return message_model
+
+
+def fetch_messages(session, conversation_id) -> list[MessageModel]:
+    return (
+        session.query(MessageModel)
+        .where(MessageModel.conversation_id == conversation_id)
+        .order_by(MessageModel.id)
+        .all()
+    )
+
+
+def delete_messages(session, conversation_id, message_id):
+    session.query(MessageModel).where(MessageModel.conversation_id == conversation_id).where(
+        MessageModel.id >= message_id
+    ).delete()
+    session.commit()
 
 
 def save_agent_goal(goal: AgentGoalModel):
