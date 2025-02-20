@@ -178,3 +178,6 @@ pyrightconfig.json
 # Streamlit
 .streamlit/secrets.toml
 db.sqlite
+
+# VS Code
+.vscode/

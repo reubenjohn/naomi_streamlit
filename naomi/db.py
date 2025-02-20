@@ -1,11 +1,9 @@
 from contextlib import contextmanager
-from dataclasses import asdict
 import json
 import os
 from typing import Any
 from sqlalchemy import create_engine, Column, Integer, String, Text, Boolean, func, text
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, declarative_base
 
 
 DB_PATH = os.environ.get("DB_PATH", "sqlite:///db.sqlite")
@@ -17,10 +15,6 @@ Session = sessionmaker(bind=engine)
 Message = dict[str, str]
 
 DEFAULT_CONVERSATION_ID = 0
-
-
-def dataclass_to_json(dataclass_instance):
-    return json.dumps(asdict(dataclass_instance))
 
 
 @contextmanager
