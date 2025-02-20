@@ -20,8 +20,8 @@ from streamlit.logger import get_logger
 from swarm import Agent  # type: ignore[import]
 
 from naomi.db import DEFAULT_CONVERSATION_ID, MessageModel, add_message_to_db, session_scope
-from naomi.llm.llm import handle_base_model_arg, llm_client
-from naomi.llm.stream_processing import MessageStream, ToolStream, parse_streaming_response
+from llm.llm import handle_base_model_arg, llm_client
+from llm.stream_processing import MessageStream, ToolStream, parse_streaming_response
 from utils import handle_login
 
 LOGGER = get_logger(__name__)

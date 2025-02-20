@@ -8,6 +8,7 @@ packages = [{include = "naomi"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+llm = { git = "https://github.com/reubenjohn/llm_utils.git", rev = "cd875057a68444d8487ceaf4f4ba6bc74c7562be" }
 openai = "^1.54.4"
 python-dotenv = "^1.0.1"
 swarm = { git = "https://github.com/openai/swarm.git", rev = "9db581cecaacea0d46a933d6453c312b034dbf47" }
