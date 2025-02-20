@@ -14,11 +14,10 @@
 
 
 import logging
-from typing import Iterator, Optional
+from typing import Optional
 import streamlit as st
-from streamlit.logger import get_logger
-from swarm import Agent  # type: ignore[import]
 
+from naomi.agent import generate_llm_response, process_llm_response
 from naomi.db import (
     DEFAULT_CONVERSATION_ID,
     MessageModel,
@@ -27,32 +26,7 @@ from naomi.db import (
     fetch_messages,
     session_scope,
 )
-from llm.llm import handle_base_model_arg, llm_client
-from llm.stream_processing import MessageStream, ToolStream, parse_streaming_response
 from utils import handle_login
-
-LOGGER = get_logger(__name__)
-
-
-def generate_llm_response(messages, model: Optional[str] = None) -> Iterator[str]:
-    model = handle_base_model_arg(model)
-    agent = Agent(
-        name="Creative Assistant",
-        model=model,
-        instructions="You are a helpful assistant.",
-        stream=True,
-    )
-    return llm_client().run(agent, messages, stream=True)
-
-
-def process_llm_response(chunks):
-    for stream in parse_streaming_response(chunks):
-        if isinstance(stream, MessageStream):
-            for chunk in stream.content_stream:
-                yield chunk
-        elif isinstance(stream, ToolStream):
-            logging.debug(f"Tool Use: {stream}")
-    logging.info("Response generation complete")
 
 
 def draw_chat():
