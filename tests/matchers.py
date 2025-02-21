@@ -1,4 +1,5 @@
 from itertools import zip_longest
+from sqlalchemy.exc import NoResultFound
 from naomi.db import MessageModel
 
 
@@ -54,5 +55,8 @@ def assert_message_model(actual: MessageModel, expected: MessageModel):
 
 
 def assert_message_persisted(expected: MessageModel, session):
-    actual = session.query(MessageModel).filter_by(id=expected.id).one()
+    try:
+        actual = session.query(MessageModel).filter_by(id=expected.id).one()
+    except NoResultFound:
+        assert False, "Message not found in database"
     assert_message_model(actual, expected)
