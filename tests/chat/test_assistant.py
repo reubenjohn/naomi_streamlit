@@ -1,26 +1,6 @@
 from streamlit.testing.v1 import AppTest
 
 
-def draw_assistant_message_wrapper():  # pragma: no cover
-    from naomi.chat.assistant import draw_assistant_message
-    from naomi.db import MessageModel
-    from tests.conftest import in_memory_session
-
-    with in_memory_session() as session:
-        draw_assistant_message(
-            MessageModel(conversation_id=1, id=1, payload={"body": "Hello!"}),
-            session,
-        )
-
-
-def draw_draft_assistant_message_wrapper():  # pragma: no cover
-    from naomi.chat.assistant import draw_draft_assistant_message
-    from tests.conftest import in_memory_session
-
-    with in_memory_session() as session:
-        draw_draft_assistant_message(1, session)
-
-
 def show_llm_response_wrapper():  # pragma: no cover
     from naomi.chat.assistant import show_llm_response
 
@@ -42,41 +22,28 @@ def show_llm_regeneration_wrapper():  # pragma: no cover
     return show_llm_regeneration(chunks)
 
 
-# def test_draw_assistant_message():
-#     at = AppTest.from_function(draw_assistant_message_wrapper)
-#     at.run()
+def draw_assistant_message_wrapper():  # pragma: no cover
+    from naomi.chat.assistant import draw_assistant_message
+    from naomi.db import MessageModel, Message
+    from tests.conftest import in_memory_session
+    import streamlit as st
 
-#     assert not at.exception
-
-#     assert len(at.markdown) == 1
-#     assert "Hello!" in at.markdown[0].value
-#     assert len(at.button) == 2
-#     assert at.button[0].key == "delete_1"
-#     assert at.button[0].label == "🗑️"
-#     assert at.button[1].key == "regenerate_1"
-#     assert at.button[1].label == "🔃"
-
-
-# def test_draw_assistant_message_button_press():
-#     at = AppTest.from_function(draw_assistant_message_wrapper)
-#     at.run()
-
-#     at.button[0].click().run()
-
-#     assert not at.exception
-
-#     assert len(at.markdown) == 0
-#     assert len(at.button) == 0
+    with in_memory_session() as session:
+        draw_assistant_message(
+            MessageModel(
+                conversation_id=1, id=1, content=Message.from_user_input("Hello!").to_json()
+            ),
+            session,
+        )
+        st.session_state["_message_count_"] = session.query(MessageModel).count()
 
 
-# def test_draw_draft_assistant_message():
-#     at = AppTest.from_function(draw_draft_assistant_message_wrapper)
-#     at.run()
+def draw_draft_assistant_message_wrapper():  # pragma: no cover
+    from naomi.chat.assistant import draw_draft_assistant_message
+    from tests.conftest import in_memory_session
 
-#     assert not at.exception
-
-#     assert len(at.markdown) == 1
-#     assert "draft" in at.markdown[0].value
+    with in_memory_session() as session:
+        draw_draft_assistant_message(1, session)
 
 
 def test_show_llm_response():
@@ -101,3 +68,84 @@ def test_show_llm_regeneration():
 
     assert not at.exception
     assert "chunk1chunk2chunk3" in at.markdown[0].value
+
+
+def test_draw_assistant_message():
+    at = AppTest.from_function(draw_assistant_message_wrapper)
+    at.run()
+
+    assert not at.exception
+    assert 0 == at.session_state["_message_count_"]
+
+    assert len(at.markdown) == 2
+    assert at.markdown[0].value
+    assert "`1`" in at.markdown[0].value
+    assert "Hello!" in at.markdown[1].value
+
+    assert len(at.button) == 2
+    assert at.button[0].key == "regenerate_1"
+    assert at.button[0].label == "🔃"
+    assert at.button[1].key == "delete_1"
+    assert at.button[1].label == "🗑️"
+
+
+def test_draw_assistant_message_regenerate_button(mock_llm_client):
+    at = AppTest.from_function(draw_assistant_message_wrapper)
+    at.run()
+    assert not at.exception
+    assert 0 == at.session_state["_message_count_"]
+
+    assert "Hello!" in at.markdown[1].value
+
+    mock_llm_client.return_value.run.return_value = iter(["Regenerated"])
+    at.button[0].click().run()
+    assert not at.exception
+    assert 1 == at.session_state["_message_count_"]
+
+    assert len(at.markdown) == 2
+    assert at.markdown[0].value
+    assert "`1`" in at.markdown[0].value
+    assert "Regenerated" in at.markdown[1].value
+
+    assert len(at.button) == 2
+    assert at.button[0].key == "regenerate_1"
+    assert at.button[0].label == "🔃"
+    assert at.button[1].key == "delete_1"
+    assert at.button[1].label == "🗑️"
+
+
+def test_draw_assistant_message_delete_button():
+    at = AppTest.from_function(draw_assistant_message_wrapper)
+    at.run()
+
+    assert not at.exception
+    assert 0 == at.session_state["_message_count_"]
+
+    assert len(at.markdown) == 2
+
+    at.button[1].click().run()
+
+    assert not at.exception
+
+    assert len(at.markdown) == 2
+    assert at.markdown[0].value
+    assert "`1`" in at.markdown[0].value
+    assert "Hello!" in at.markdown[1].value
+
+    assert len(at.button) == 2
+    assert at.button[0].key == "regenerate_1"
+    assert at.button[0].label == "🔃"
+    assert at.button[1].key == "delete_1"
+    assert at.button[1].label == "🗑️"
+
+
+def test_draw_draft_assistant_message_regenerate_button(mock_llm_client):
+    mock_llm_client.return_value.run.return_value = iter(["Generated"])
+    at = AppTest.from_function(draw_draft_assistant_message_wrapper)
+    at.run()
+    assert not at.exception
+
+    assert len(at.markdown) == 2
+    assert at.markdown[0].value
+    assert "draft" in at.markdown[0].value
+    assert "Generated" in at.markdown[1].value
