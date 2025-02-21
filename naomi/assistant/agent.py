@@ -20,7 +20,7 @@ def generate_llm_response(messages: list[Message], model: Optional[str] = None) 
     return llm_client().run(agent, messages, stream=True)
 
 
-def process_llm_response(chunks):
+def process_llm_response(chunks) -> Iterator[str]:
     for stream in parse_streaming_response(chunks):
         if isinstance(stream, MessageStream):
             for chunk in stream.content_stream:

@@ -1,13 +1,10 @@
-from contextlib import contextmanager
 import json
 from unittest.mock import patch
-import pytest
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 from naomi.db import (
     Base,
+    Message,
     MessageModel,
-    delete_messages,
+    delete_messages_after,
     fetch_messages,
     initialize_db,
     save_agent_goal,
@@ -18,64 +15,44 @@ from naomi.db import (
 )
 from naomi.db import Conversation, SummaryModel, PropertyModel, get_all_tables
 
-TEST_DATABASE_URL = "sqlite:///:memory:"
-engine = create_engine(TEST_DATABASE_URL)
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+from tests.conftest import engine, TestingSessionLocal
+from tests.matchers import assert_message_model
 
 
-@pytest.fixture(scope="function", autouse=True)
-def test_db():
-    """Creates a new database for each test case."""
-
-    with patch("naomi.db.engine", new_callable=lambda: engine):
-        assert get_all_tables() == []
-
-    Base.metadata.create_all(bind=engine)
-    yield
-    Base.metadata.drop_all(bind=engine)
-
-    with patch("naomi.db.engine", new_callable=lambda: engine):
-        assert get_all_tables() == []
+def test_message_from_llm_response():
+    assistant_message = "Hello, how can I assist you today?"
+    message = Message.from_llm_response(assistant_message)
+    assert message["role"] == "assistant"
+    assert message["content"] == assistant_message
 
 
-@pytest.fixture(scope="function")
-def db_session():
-    session = TestingSessionLocal()
-    yield session
-    session.rollback()
-    session.close()
+def test_message_from_user_input():
+    user_prompt = "What is the weather like today?"
+    message = Message.from_user_input(user_prompt)
+    assert message["role"] == "user"
+    assert message["content"] == user_prompt
 
 
-@pytest.fixture(scope="function", autouse=True)
-def patched_session_scope(db_session):
-    """Fixture to patch session_scope so it returns the test database session."""
-
-    @contextmanager
-    def mock_session_scope():
-        yield db_session  # Return the test session
-
-    with patch("naomi.db.session_scope", side_effect=mock_session_scope):
-        yield  # Ensures patch is applied for the duration of the test
+def test_message_from_json():
+    json_str = '{"role": "user", "content": "What is the weather like today?"}'
+    message = Message.from_json(json_str)
+    assert message["role"] == "user"
+    assert message["content"] == "What is the weather like today?"
 
 
-@pytest.fixture(scope="function")
-def message_data():
-    return {"content": "Hello, NAOMI!"}
+def test_message_to_json():
+    message = Message(role="assistant", content="Hello, how can I assist you today?")
+    json_str = message.to_json()
+    expected_json_str = '{"role": "assistant", "content": "Hello, how can I assist you today?"}'
+    assert json.loads(json_str) == json.loads(expected_json_str)
 
 
-@pytest.fixture(scope="function")
-def message_data2():
-    return {"content": "How are you?"}
-
-
-@pytest.fixture(scope="function")
-def create_messages(db_session, message_data, message_data2):
-    message1 = MessageModel(conversation_id=1, id=1, content=json.dumps(message_data))
-    message2 = MessageModel(conversation_id=1, id=2, content=json.dumps(message_data2))
-    db_session.add(message1)
-    db_session.add(message2)
-    db_session.commit()
-    return message1, message2
+def test_message_body_property():
+    message = Message(role="assistant", content="Hello, how can I assist you today?")
+    assert message.body == "Hello, how can I assist you today?"
+    message.body = "New content"
+    assert message.body == "New content"
+    assert message["content"] == "New content"
 
 
 @patch("naomi.db.engine", new_callable=lambda: engine)
@@ -88,37 +65,49 @@ def test_initialize_db_and_get_all_tables(_):
     }
 
 
-def test_add_message(db_session, message_data):
+def test_add_message(db_session, message_data: Message):
     result = add_message_to_db(message_data, db_session, conversation_id=1)
     db_session.commit()
     assert result.id == 1
-    assert result.content_dict == message_data
+    assert result.payload == message_data
     saved_message = db_session.query(MessageModel).filter_by(id=1).one()
-    assert saved_message.content_dict == message_data
+    assert saved_message.payload == message_data
 
 
-def test_message_content_functions(db_session, message_data):
+def test_message_content_functions(db_session, message_data: Message):
     message = MessageModel(conversation_id=1, id=1, content=json.dumps(message_data))
     db_session.add(message)
     db_session.commit()
     saved_message = db_session.query(MessageModel).filter_by(id=1).one()
-    assert saved_message.content_dict == message_data
-    assert saved_message.content_dumps == json.dumps(message_data)
-    assert saved_message.content_val == "Hello, NAOMI!"
+    assert saved_message.payload == message_data
 
 
-def test_fetch_messages(db_session, create_messages, message_data, message_data2):
+def test_message_model_from_llm_response(db_session):
+    assistant_message = "Hello, how can I assist you today?"
+    actual = MessageModel.from_llm_response(conversation_id=1, assistant_message=assistant_message)
+    expected = MessageModel(
+        conversation_id=1,
+        content=Message.from_llm_response(assistant_message).to_json(),
+    )
+
+    assert_message_model(actual, expected)
+
+
+def test_fetch_messages(db_session, persist_messages):
+    message1, message2 = persist_messages
     messages = fetch_messages(db_session, conversation_id=1)
     assert len(messages) == 2
-    assert messages[0].content_dict == message_data
-    assert messages[1].content_dict == message_data2
+    assert messages[0] == message1
+    assert messages[1] == message2
 
 
-def test_delete_messages(db_session, create_messages, message_data):
-    delete_messages(db_session, conversation_id=1, message_id=2)
+def test_delete_messages(
+    db_session, persist_messages, message2: MessageModel, message_data: Message
+):
+    delete_messages_after(db_session, message2)
     messages = fetch_messages(db_session, conversation_id=1)
     assert len(messages) == 1
-    assert messages[0].content_dict == message_data
+    assert messages[0].payload == message_data
 
 
 def test_save_and_load_agent_goal(db_session):

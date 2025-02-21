@@ -12,7 +12,31 @@ Base: Any = declarative_base()
 engine = create_engine(DB_PATH)
 Session = sessionmaker(bind=engine)
 
-Message = dict[str, str]
+
+class Message(dict[str, str]):
+    @staticmethod
+    def from_llm_response(assistant_message: str) -> "Message":
+        return Message(role="assistant", content=assistant_message)
+
+    @staticmethod
+    def from_user_input(prompt: str) -> "Message":
+        return Message(role="user", content=prompt)
+
+    @staticmethod
+    def from_json(json_str: str) -> "Message":
+        return Message(**json.loads(json_str))
+
+    def to_json(self) -> str:
+        return json.dumps(self)
+
+    @property
+    def body(self) -> str:
+        return self["content"]
+
+    @body.setter
+    def body(self, value: str) -> None:
+        self["content"] = value
+
 
 DEFAULT_CONVERSATION_ID = 0
 
@@ -44,16 +68,15 @@ class MessageModel(Base):
     content = Column(Text, nullable=False)
 
     @property
-    def content_dumps(self) -> str:
-        return str(self.content)
+    def payload(self) -> Message:
+        return Message.from_json(str(self.content))
 
-    @property
-    def content_dict(self) -> Message:
-        return json.loads(self.content)  # type: ignore
-
-    @property
-    def content_val(self) -> str:
-        return self.content_dict["content"]
+    @staticmethod
+    def from_llm_response(conversation_id: int, assistant_message: str) -> "MessageModel":
+        return MessageModel(
+            conversation_id=conversation_id,
+            content=Message.from_llm_response(assistant_message).to_json(),
+        )
 
 
 class SummaryModel(Base):
@@ -109,10 +132,10 @@ def fetch_messages(session, conversation_id) -> list[MessageModel]:
     )
 
 
-def delete_messages(session, conversation_id, message_id):
-    session.query(MessageModel).where(MessageModel.conversation_id == conversation_id).where(
-        MessageModel.id >= message_id
-    ).delete()
+def delete_messages_after(session, message: MessageModel):
+    session.query(MessageModel).where(
+        MessageModel.conversation_id == message.conversation_id
+    ).where(MessageModel.id >= message.id).delete()
     session.commit()
 
 
