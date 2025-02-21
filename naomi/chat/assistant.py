@@ -29,7 +29,7 @@ def draw_assistant_message(existing_message: MessageModel, session):
     col1.write(message_id)
 
     if col2.button("🗑️", key=f"delete_{message_id}"):
-        logging.info(f"Deleting message {existing_message.id}")
+        logging.info(f"Deleting messages from {existing_message.id}")
         delete_messages_after(session, existing_message)
         st.rerun()
         return

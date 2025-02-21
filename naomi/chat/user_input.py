@@ -14,7 +14,7 @@ def draw_user_message(message: MessageModel, session):
         st.write(message.id)
     with col3:
         if st.button("🗑️", key=f"delete_{message.id}"):
-            logging.info(f"Deleting message {message.id}")
+            logging.info(f"Deleting messages from {message.id}")
             delete_messages_after(session, message)
             st.rerun()
             return
