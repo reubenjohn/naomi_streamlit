@@ -11,6 +11,7 @@ from naomi.db import (
     MessageModel,
 )
 from naomi.db import get_all_tables
+from tests.data import message_data_1, message_data_2, message_model_1, message_model_2
 
 os.environ["OPENAI_BASE_URL"] = ""
 os.environ["OPENAI_API_KEY"] = ""
@@ -39,6 +40,7 @@ def test_db():
         assert get_all_tables() == []
 
     Base.metadata.create_all(bind=engine)
+    # raise ValueError("Correct")
     yield
     Base.metadata.drop_all(bind=engine)
 
@@ -55,7 +57,7 @@ def db_session():
 
 
 @pytest.fixture(scope="function", autouse=True)
-def patched_session_scope(db_session):
+def patched_session_scope(test_db, db_session):
     """Fixture to patch session_scope so it returns the test database session."""
 
     @contextmanager
@@ -68,22 +70,22 @@ def patched_session_scope(db_session):
 
 @pytest.fixture(scope="function")
 def message_data() -> Message:
-    return Message(content="Hello, NAOMI!")
+    return message_data_1()
 
 
 @pytest.fixture(scope="function")
 def message_data2() -> Message:
-    return Message(content="How are you?")
+    return message_data_2()
 
 
 @pytest.fixture(scope="function")
-def message1(message_data):
-    return MessageModel(conversation_id=1, id=1, content=message_data.to_json())
+def message1() -> MessageModel:
+    return message_model_1()
 
 
 @pytest.fixture(scope="function")
-def message2(message_data2):
-    return MessageModel(conversation_id=1, id=2, content=message_data2.to_json())
+def message2() -> MessageModel:
+    return message_model_2()
 
 
 @pytest.fixture(scope="function")

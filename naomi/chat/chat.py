@@ -5,23 +5,29 @@ from naomi.chat.user_input import draw_user_message
 from naomi.db import (
     DEFAULT_CONVERSATION_ID,
     Message,
+    MessageModel,
     add_message_to_db,
     fetch_messages,
     session_scope,
 )
 
 
+def draw_messages(messages: list[MessageModel], session):
+    for message in messages:
+        role = message.payload["role"]
+        with st.chat_message("user" if role == "user" else "assistant"):
+            if role == "user":
+                draw_user_message(message, session)
+            else:
+                draw_assistant_message(message, session)
+
+
 def draw_chat():
     st.header("💬 Chat")
 
     with session_scope() as session:
-        for message in fetch_messages(session, DEFAULT_CONVERSATION_ID):
-            role = message.payload["role"]
-            with st.chat_message("user" if role == "user" else "assistant"):
-                if role == "user":
-                    draw_user_message(message, session)
-                else:
-                    draw_assistant_message(message, session)
+        messages = fetch_messages(session, DEFAULT_CONVERSATION_ID)
+        draw_messages(messages, session)
 
     if prompt := st.chat_input("Type your message here..."):
         with st.chat_message("user"):
