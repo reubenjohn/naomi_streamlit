@@ -16,7 +16,7 @@
 import streamlit as st
 
 from naomi.chat.chat import draw_chat
-from utils import handle_login
+from naomi.utils import handle_login
 
 
 def run():
@@ -29,7 +29,3 @@ def run():
         exit(0)
 
     draw_chat()
-
-
-if __name__ == "__main__":
-    run()
