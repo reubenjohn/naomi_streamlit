@@ -2,7 +2,7 @@ from contextlib import contextmanager
 import json
 import os
 from typing import Any
-from sqlalchemy import create_engine, Column, Integer, String, Text, Boolean, func, text
+from sqlalchemy import DateTime, create_engine, Column, Integer, String, Text, Boolean, func, text
 from sqlalchemy.orm import sessionmaker, declarative_base
 
 
@@ -98,6 +98,15 @@ class PropertyModel(Base):
     __tablename__ = "property"
     key = Column(String, primary_key=True, nullable=False)
     value = Column(Text, nullable=False)
+
+
+class WebhookEvent(Base):
+    __tablename__ = "event"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    event_type = Column(String, nullable=False)
+    payload = Column(Text, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    status = Column(String, nullable=False, server_default="NEW")
 
 
 # Database setup
