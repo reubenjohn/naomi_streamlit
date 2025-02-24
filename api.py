@@ -1,5 +1,7 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
+from pydantic import BaseModel
+from typing import Dict, Any
 
 from naomi.db import WebhookEvent, initialize_db, session_scope
 
@@ -17,12 +19,15 @@ app = FastAPI(
 )
 
 
+class WebhookEventRequest(BaseModel):
+    type: str
+    payload: Dict[str, Any]
+
+
 @app.post("/api/webhook")
-async def receive_webhook(request: Request):
-    data = await request.json()
-    event_type = data.get("type", "unknown")
+async def receive_webhook(event: WebhookEventRequest):
     with session_scope() as session:
-        new_event = WebhookEvent(event_type=event_type, payload=str(data))
+        new_event = WebhookEvent(event_type=event.type, payload=str(event.payload))
         session.add(new_event)
     return {"status": "OK"}
 

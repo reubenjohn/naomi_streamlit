@@ -31,18 +31,21 @@ def show_events():
 
     with session_scope() as session:
         events = session.query(WebhookEvent).order_by(WebhookEvent.created_at.asc()).all()
-        st.table(
-            [
-                {
-                    "ID": e.id,
-                    "Type": e.event_type,
-                    "Payload": e.payload,
-                    "Created": e.created_at,
-                    "Status": e.status,
-                }
-                for e in events
-            ]
-        )
+        for event in events:
+            cols = st.columns([0.5, 2, 2, 1, 1])
+            cols[0].write(event.id)
+            cols[1].write(event.event_type)
+            cols[2].write(event.created_at)
+            cols[3].write(event.status)
+            if cols[4].button("🗑️", key=f"delete_{event.id}"):
+                with session_scope() as delete_session:
+                    delete_event = delete_session.query(WebhookEvent).get(event.id)
+                    delete_session.delete(delete_event)
+                    st.success(f"Event {event.id} deleted successfully!")
+                st.rerun()
+            with st.expander("Payload", expanded=False):
+                st.json(event.payload)
+            st.divider()
 
 
 show_events()
