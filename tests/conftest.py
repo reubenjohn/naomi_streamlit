@@ -5,12 +5,12 @@ from unittest.mock import patch
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from naomi.db import (
+from naomi_streamlit.db import (
     Base,
     Message,
     MessageModel,
 )
-from naomi.db import get_all_tables
+from naomi_streamlit.db import get_all_tables
 from tests.data import message_data_1, message_data_2, message_model_1, message_model_2
 
 os.environ["OPENAI_BASE_URL"] = ""
@@ -36,7 +36,7 @@ def in_memory_session():
 def test_db():
     """Creates a new database for each test case."""
 
-    with patch("naomi.db.engine", new_callable=lambda: engine):
+    with patch("naomi_streamlit.db.engine", new_callable=lambda: engine):
         assert get_all_tables() == []
 
     Base.metadata.create_all(bind=engine)
@@ -44,7 +44,7 @@ def test_db():
     yield
     Base.metadata.drop_all(bind=engine)
 
-    with patch("naomi.db.engine", new_callable=lambda: engine):
+    with patch("naomi_streamlit.db.engine", new_callable=lambda: engine):
         assert get_all_tables() == []
 
 
@@ -64,7 +64,7 @@ def patched_session_scope(test_db, db_session):
     def mock_session_scope():
         yield db_session  # Return the test session
 
-    with patch("naomi.db.session_scope", side_effect=mock_session_scope):
+    with patch("naomi_streamlit.db.session_scope", side_effect=mock_session_scope):
         yield  # Ensures patch is applied for the duration of the test
 
 
@@ -98,7 +98,7 @@ def persist_messages(db_session, message1: MessageModel, message2: MessageModel)
 
 @pytest.fixture
 def mock_llm_client():
-    with patch("naomi.assistant.agent.llm_client") as mock:
+    with patch("naomi_streamlit.assistant.agent.llm_client") as mock:
         yield mock
 
 
@@ -109,7 +109,7 @@ def pass_thru_process_llm_response(chunks: Iterator[str]) -> Iterator[str]:
 @pytest.fixture(scope="function", autouse=True)
 def patch_process_llm_response():
     with patch(
-        "naomi.assistant.persistence.process_llm_response",
+        "naomi_streamlit.assistant.persistence.process_llm_response",
         side_effect=pass_thru_process_llm_response,
     ):
         yield

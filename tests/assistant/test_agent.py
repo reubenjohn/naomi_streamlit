@@ -2,7 +2,7 @@ from unittest.mock import patch
 from llm.stream_processing import MessageStream, ToolStream
 from swarm import Agent  # type: ignore[import]
 
-from naomi.assistant.agent import generate_llm_response, process_llm_response
+from naomi_streamlit.assistant.agent import generate_llm_response, process_llm_response
 from tests.matchers import InstanceOf
 
 
@@ -17,7 +17,7 @@ def test_generate_llm_response(mock_llm_client):
     mock_llm_client_instance.run.assert_called_once_with(InstanceOf(Agent), messages, stream=True)
 
 
-@patch("naomi.assistant.agent.parse_streaming_response")
+@patch("naomi_streamlit.assistant.agent.parse_streaming_response")
 def test_process_llm_response(mock_parse_streaming_response):
     chunks = [
         MessageStream(

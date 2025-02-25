@@ -1,4 +1,4 @@
-from naomi.db import Message, MessageModel
+from naomi_streamlit.db import Message, MessageModel
 
 
 def message_data_1() -> Message:

@@ -1,10 +1,10 @@
 from typing import Iterator
 import pytest
-from naomi.assistant.persistence import (
+from naomi_streamlit.assistant.persistence import (
     persist_llm_response,
     generate_and_persist_llm_response,
 )
-from naomi.db import Message, MessageModel
+from naomi_streamlit.db import Message, MessageModel
 from tests.matchers import assert_message_persisted
 
 

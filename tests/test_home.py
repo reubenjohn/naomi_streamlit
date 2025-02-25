@@ -4,7 +4,7 @@ from unittest.mock import patch
 
 def run_wrapper():  # pragma: no cover
     import streamlit as st
-    from naomi.home import run
+    from naomi_streamlit.home import run
 
     try:
         run()
@@ -13,8 +13,8 @@ def run_wrapper():  # pragma: no cover
         st.session_state["_exit_code_"] = e.code
 
 
-@patch("naomi.home.handle_login")
-@patch("naomi.home.draw_chat")
+@patch("naomi_streamlit.home.handle_login")
+@patch("naomi_streamlit.home.draw_chat")
 def test_run_logged_in(mock_draw_chat, mock_handle_login):
     mock_handle_login.return_value = True
 
@@ -28,8 +28,8 @@ def test_run_logged_in(mock_draw_chat, mock_handle_login):
     assert at.session_state["_exit_code_"] is None
 
 
-@patch("naomi.home.handle_login")
-@patch("naomi.home.draw_chat")
+@patch("naomi_streamlit.home.handle_login")
+@patch("naomi_streamlit.home.draw_chat")
 def test_run_not_logged_in(mock_draw_chat, mock_handle_login):
     mock_handle_login.return_value = False
 

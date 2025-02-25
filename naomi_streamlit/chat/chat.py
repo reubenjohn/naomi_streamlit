@@ -1,8 +1,8 @@
 import streamlit as st
 
-from naomi.chat.assistant import draw_assistant_message, draw_draft_assistant_message
-from naomi.chat.user_input import draw_user_message
-from naomi.db import (
+from naomi_streamlit.chat.assistant import draw_assistant_message, draw_draft_assistant_message
+from naomi_streamlit.chat.user_input import draw_user_message
+from naomi_streamlit.db import (
     DEFAULT_CONVERSATION_ID,
     Message,
     MessageModel,

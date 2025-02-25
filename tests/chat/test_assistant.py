@@ -2,29 +2,29 @@ from streamlit.testing.v1 import AppTest
 
 
 def show_llm_response_wrapper():  # pragma: no cover
-    from naomi.chat.assistant import show_llm_response
+    from naomi_streamlit.chat.assistant import show_llm_response
 
     chunks = iter(["chunk1", "chunk2", "chunk3"])
     return show_llm_response(chunks, "Test Spinner")
 
 
 def show_llm_generation_wrapper():  # pragma: no cover
-    from naomi.chat.assistant import show_llm_generation
+    from naomi_streamlit.chat.assistant import show_llm_generation
 
     chunks = iter(["chunk1", "chunk2", "chunk3"])
     return show_llm_generation(chunks)
 
 
 def show_llm_regeneration_wrapper():  # pragma: no cover
-    from naomi.chat.assistant import show_llm_regeneration
+    from naomi_streamlit.chat.assistant import show_llm_regeneration
 
     chunks = iter(["chunk1", "chunk2", "chunk3"])
     return show_llm_regeneration(chunks)
 
 
 def draw_assistant_message_wrapper():  # pragma: no cover
-    from naomi.chat.assistant import draw_assistant_message
-    from naomi.db import MessageModel, Message
+    from naomi_streamlit.chat.assistant import draw_assistant_message
+    from naomi_streamlit.db import MessageModel, Message
     from tests.conftest import in_memory_session
     import streamlit as st
 
@@ -39,7 +39,7 @@ def draw_assistant_message_wrapper():  # pragma: no cover
 
 
 def draw_draft_assistant_message_wrapper():  # pragma: no cover
-    from naomi.chat.assistant import draw_draft_assistant_message
+    from naomi_streamlit.chat.assistant import draw_draft_assistant_message
     from tests.conftest import in_memory_session
 
     with in_memory_session() as session:

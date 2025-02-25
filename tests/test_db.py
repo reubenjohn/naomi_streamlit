@@ -1,6 +1,6 @@
 import json
 from unittest.mock import patch
-from naomi.db import (
+from naomi_streamlit.db import (
     Base,
     Message,
     MessageModel,
@@ -13,7 +13,7 @@ from naomi.db import (
     load_goals_from_db,
     session_scope,
 )
-from naomi.db import Conversation, SummaryModel, PropertyModel, get_all_tables
+from naomi_streamlit.db import Conversation, SummaryModel, PropertyModel, get_all_tables
 
 from tests.conftest import engine, TestingSessionLocal
 from tests.matchers import assert_message_model
@@ -55,7 +55,7 @@ def test_message_body_property():
     assert message["content"] == "New content"
 
 
-@patch("naomi.db.engine", new_callable=lambda: engine)
+@patch("naomi_streamlit.db.engine", new_callable=lambda: engine)
 def test_initialize_db_and_get_all_tables(_):
     Base.metadata.drop_all(bind=engine)
     assert [] == get_all_tables()
@@ -143,7 +143,7 @@ def test_create_and_query_models(db_session):
     assert saved_prop.value == "testValue"
 
 
-@patch("naomi.db.Session", new_callable=lambda: TestingSessionLocal)
+@patch("naomi_streamlit.db.Session", new_callable=lambda: TestingSessionLocal)
 def test_session_scope(mock_session):
     with session_scope() as session:
         assert session is not None
@@ -156,7 +156,7 @@ def test_session_scope(mock_session):
         assert saved_convo.description == "A test conversation"
 
 
-@patch("naomi.db.Session", new_callable=lambda: TestingSessionLocal)
+@patch("naomi_streamlit.db.Session", new_callable=lambda: TestingSessionLocal)
 def test_session_scope_commit(mock_session, db_session):
     with session_scope() as session:
         assert session is not None
@@ -167,7 +167,7 @@ def test_session_scope_commit(mock_session, db_session):
     assert saved_convo.description == "A test conversation"
 
 
-@patch("naomi.db.Session", new_callable=lambda: TestingSessionLocal)
+@patch("naomi_streamlit.db.Session", new_callable=lambda: TestingSessionLocal)
 def test_session_scope_rollback(mock_session):
     try:
         with session_scope() as session:

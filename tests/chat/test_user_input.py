@@ -2,9 +2,9 @@ from streamlit.testing.v1 import AppTest
 
 
 def draw_user_message_wrapper():  # pragma: no cover
-    from naomi.chat.user_input import draw_user_message
-    from naomi.db import MessageModel
-    from naomi.db import Message
+    from naomi_streamlit.chat.user_input import draw_user_message
+    from naomi_streamlit.db import MessageModel
+    from naomi_streamlit.db import Message
     from tests.conftest import in_memory_session
 
     with in_memory_session() as session:

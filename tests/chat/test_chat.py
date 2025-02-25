@@ -1,13 +1,13 @@
 from streamlit.testing.v1 import AppTest
 from unittest.mock import MagicMock, patch
 
-from naomi.db import DEFAULT_CONVERSATION_ID, Message
+from naomi_streamlit.db import DEFAULT_CONVERSATION_ID, Message
 from tests.matchers import EqualsMessageModel, InstanceOf
 from tests.data import message_model_1, message_model_2, message_model_3
 
 
 def draw_messages_wrapper():  # pragma: no cover
-    from naomi.chat.chat import draw_messages
+    from naomi_streamlit.chat.chat import draw_messages
     from tests.data import message_model_1, message_model_2
     from unittest.mock import MagicMock
 
@@ -15,8 +15,8 @@ def draw_messages_wrapper():  # pragma: no cover
     draw_messages(messages, MagicMock())
 
 
-@patch("naomi.chat.chat.draw_assistant_message")
-@patch("naomi.chat.chat.draw_user_message")
+@patch("naomi_streamlit.chat.chat.draw_assistant_message")
+@patch("naomi_streamlit.chat.chat.draw_user_message")
 def test_draw_messages(mock_draw_user_message, mock_draw_assistant_message):
     at = AppTest.from_function(draw_messages_wrapper)
     at.run()
@@ -37,17 +37,17 @@ def test_draw_messages(mock_draw_user_message, mock_draw_assistant_message):
 
 
 def draw_chat_wrapper():  # pragma: no cover
-    from naomi.chat.chat import draw_chat
+    from naomi_streamlit.chat.chat import draw_chat
 
     draw_chat()
 
 
-@patch("naomi.chat.chat.session_scope")
-@patch("naomi.chat.chat.fetch_messages")
-@patch("naomi.chat.chat.add_message_to_db")
-@patch("naomi.chat.chat.draw_draft_assistant_message")
-@patch("naomi.chat.chat.draw_assistant_message")
-@patch("naomi.chat.chat.draw_user_message")
+@patch("naomi_streamlit.chat.chat.session_scope")
+@patch("naomi_streamlit.chat.chat.fetch_messages")
+@patch("naomi_streamlit.chat.chat.add_message_to_db")
+@patch("naomi_streamlit.chat.chat.draw_draft_assistant_message")
+@patch("naomi_streamlit.chat.chat.draw_assistant_message")
+@patch("naomi_streamlit.chat.chat.draw_user_message")
 def test_draw_chat(
     mock_draw_user_message,
     mock_draw_assistant_message,
@@ -78,12 +78,12 @@ def test_draw_chat(
     assert not mock_draw_draft_assistant_message.called
 
 
-@patch("naomi.chat.chat.session_scope")
-@patch("naomi.chat.chat.fetch_messages")
-@patch("naomi.chat.chat.add_message_to_db")
-@patch("naomi.chat.chat.draw_draft_assistant_message")
-@patch("naomi.chat.chat.draw_assistant_message")
-@patch("naomi.chat.chat.draw_user_message")
+@patch("naomi_streamlit.chat.chat.session_scope")
+@patch("naomi_streamlit.chat.chat.fetch_messages")
+@patch("naomi_streamlit.chat.chat.add_message_to_db")
+@patch("naomi_streamlit.chat.chat.draw_draft_assistant_message")
+@patch("naomi_streamlit.chat.chat.draw_assistant_message")
+@patch("naomi_streamlit.chat.chat.draw_user_message")
 def test_draw_chat_user_input(
     mock_draw_user_message,
     mock_draw_assistant_message,

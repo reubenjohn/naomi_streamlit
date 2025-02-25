@@ -2,7 +2,7 @@ import logging
 from typing import Iterator, Optional
 from swarm import Agent  # type: ignore[import]
 
-from naomi.db import (
+from naomi_streamlit.db import (
     Message,
 )
 from llm.llm import handle_base_model_arg, llm_client

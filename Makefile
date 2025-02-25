@@ -25,28 +25,28 @@ install:          ## Install the project in dev mode.
 
 .PHONY: fmt
 fmt:              ## Format code using black & isort.
-	$(ENV_PREFIX)isort naomi/
-	$(ENV_PREFIX)black naomi/
+	$(ENV_PREFIX)isort naomi_streamlit/
+	$(ENV_PREFIX)black naomi_streamlit/
 	$(ENV_PREFIX)black tests/
 
 .PHONY: lint
 lint:             ## Run pep8, black, mypy linters.
 	@echo $(ENV_PREFIX)
-	$(ENV_PREFIX)flake8 naomi/
-	$(ENV_PREFIX)black --check naomi/
+	$(ENV_PREFIX)flake8 naomi_streamlit/
+	$(ENV_PREFIX)black --check naomi_streamlit/
 	$(ENV_PREFIX)black --check tests/
-	$(ENV_PREFIX)mypy --ignore-missing-imports naomi/
+	$(ENV_PREFIX)mypy --ignore-missing-imports naomi_streamlit/
 
 .PHONY: test
 test: lint        ## Run tests and generate coverage report.
-	xvfb-run $(ENV_PREFIX)pytest -v --cov-config .coveragerc --cov=naomi -l --tb=short --maxfail=1 tests/ || tests_failed=1
+	xvfb-run $(ENV_PREFIX)pytest -v --cov-config .coveragerc --cov=naomi_streamlit -l --tb=short --maxfail=1 tests/ || tests_failed=1
 	$(ENV_PREFIX)coverage xml
 	$(ENV_PREFIX)coverage html
 	exit $$tests_failed
 
 .PHONY: test-headed # Used on machines with a display that doesn't have xvfb setup
 test-headed: lint        ## Run tests and generate coverage report.
-	$(ENV_PREFIX)pytest -v --cov-config .coveragerc --cov=naomi -l --tb=short --maxfail=1 tests/
+	$(ENV_PREFIX)pytest -v --cov-config .coveragerc --cov=naomi_streamlit -l --tb=short --maxfail=1 tests/
 	$(ENV_PREFIX)coverage xml
 	$(ENV_PREFIX)coverage html
 
@@ -74,9 +74,9 @@ clean:            ## Clean unused files.
 release:          ## Create a new tag for release.
 	@echo "WARNING: This operation will create s version tag and push to github"
 	@read -p "Version? (provide the next x.y.z semver) : " TAG
-	@echo "$${TAG}" > naomi/VERSION
+	@echo "$${TAG}" > naomi_streamlit/VERSION
 	@$(ENV_PREFIX)gitchangelog > HISTORY.md
-	@git add naomi/VERSION HISTORY.md
+	@git add naomi_streamlit/VERSION HISTORY.md
 	@git commit -m "release: version $${TAG} 🚀"
 	@echo "creating git tag : $${TAG}"
 	@git tag $${TAG}

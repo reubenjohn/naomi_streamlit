@@ -1,4 +1,4 @@
-from naomi.sanity import sanity_check
+from naomi_streamlit.sanity import sanity_check
 import pytest
 
 

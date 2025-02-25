@@ -3,8 +3,8 @@ from typing import Callable, Iterator
 
 from sqlalchemy import Column
 
-from naomi.assistant.agent import generate_llm_response, process_llm_response
-from naomi.db import (
+from naomi_streamlit.assistant.agent import generate_llm_response, process_llm_response
+from naomi_streamlit.db import (
     MessageModel,
     add_message_to_db,
     delete_messages_after,

@@ -2,8 +2,8 @@ import argparse
 import logging
 from dotenv import load_dotenv
 
-from naomi.db import initialize_db
-from naomi.home import run
+from naomi_streamlit.db import initialize_db
+from naomi_streamlit.home import run
 
 
 def parse_args():

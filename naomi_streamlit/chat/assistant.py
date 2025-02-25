@@ -2,8 +2,8 @@ import logging
 from typing import Iterator
 import streamlit as st
 
-from naomi.assistant.persistence import generate_and_persist_llm_response
-from naomi.db import (
+from naomi_streamlit.assistant.persistence import generate_and_persist_llm_response
+from naomi_streamlit.db import (
     MessageModel,
     delete_messages_after,
 )

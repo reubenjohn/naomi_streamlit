@@ -4,12 +4,12 @@ from unittest.mock import patch
 
 def handle_login_wrapper():  # pragma: no cover
     import streamlit as st
-    from naomi.utils import handle_login
+    from naomi_streamlit.utils import handle_login
 
     st.session_state["_is_logged_in_"] = handle_login()
 
 
-@patch("naomi.utils.st.experimental_user")
+@patch("naomi_streamlit.utils.st.experimental_user")
 def test_handle_login_logged_in(mock_experimental_user):
     mock_experimental_user.get.return_value = True
     mock_experimental_user.name = "Test User"
@@ -25,7 +25,7 @@ def test_handle_login_logged_in(mock_experimental_user):
     assert at.session_state["_is_logged_in_"] is True
 
 
-@patch("naomi.utils.st.experimental_user")
+@patch("naomi_streamlit.utils.st.experimental_user")
 def test_handle_login_not_logged_in(mock_experimental_user):
     mock_experimental_user.get.return_value = False
 
@@ -39,8 +39,8 @@ def test_handle_login_not_logged_in(mock_experimental_user):
     assert at.sidebar.button[0].label == "Log in"
 
 
-@patch("naomi.utils.st.experimental_user")
-@patch("naomi.utils.st.logout")
+@patch("naomi_streamlit.utils.st.experimental_user")
+@patch("naomi_streamlit.utils.st.logout")
 def test_handle_logout_button(mock_logout, mock_experimental_user):
     mock_experimental_user.get.return_value = True
     mock_experimental_user.name = "Test User"
@@ -58,8 +58,8 @@ def test_handle_logout_button(mock_logout, mock_experimental_user):
     mock_logout.assert_called_once()
 
 
-@patch("naomi.utils.st.experimental_user")
-@patch("naomi.utils.st.login")
+@patch("naomi_streamlit.utils.st.experimental_user")
+@patch("naomi_streamlit.utils.st.login")
 def test_handle_login_button(mock_login, mock_experimental_user):
     mock_experimental_user.get.return_value = False
 

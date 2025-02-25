@@ -15,8 +15,8 @@
 
 import streamlit as st
 
-from naomi.chat.chat import draw_chat
-from naomi.utils import handle_login
+from naomi_streamlit.chat.chat import draw_chat
+from naomi_streamlit.utils import handle_login
 
 
 def run():

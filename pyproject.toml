@@ -1,10 +1,10 @@
 [tool.poetry]
-name = "naomi"
+name = "naomi_streamlit"
 version = "0.1.0"
 description = ""
 authors = ["rochacbruno"]
 readme = "README.md"
-packages = [{include = "naomi"}]
+packages = [{include = "naomi_streamlit"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -35,9 +35,6 @@ pandas-stubs = "^2.2.3.241126"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.poetry.scripts]
-naomi = 'naomi.__main__:main'
 
 [tool.black]
 line-length = 100
