@@ -60,7 +60,7 @@ def test_initialize_db_and_get_all_tables(_):
     Base.metadata.drop_all(bind=engine)
     assert [] == get_all_tables()
     initialize_db()
-    assert {"conversation", "message", "summary", "agent_goal", "property"} == {
+    assert {"conversation", "message", "summary", "agent_goal", "property", "event"} == {
         t[0] for t in get_all_tables()
     }
 
