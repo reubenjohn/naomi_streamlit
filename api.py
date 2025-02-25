@@ -24,7 +24,7 @@ class WebhookEventRequest(BaseModel):
     payload: Dict[str, Any]
 
 
-@app.post("/api/webhook")
+@app.post("/webhook")
 async def receive_webhook(event: WebhookEventRequest):
     with session_scope() as session:
         new_event = WebhookEvent(event_type=event.type, payload=str(event.payload))
