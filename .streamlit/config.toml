@@ -1,3 +1,2 @@
 [server]
-baseUrlPath = "streamlit"
 headless = true
