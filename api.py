@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import Dict, Any
 
-from naomi_streamlit.db import WebhookEvent, initialize_db, session_scope
+from naomi_core.db import WebhookEvent, initialize_db, session_scope
 
 
 @asynccontextmanager

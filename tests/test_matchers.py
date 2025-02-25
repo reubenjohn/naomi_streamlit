@@ -1,5 +1,5 @@
 import pytest
-from naomi_streamlit.db import MessageModel
+from naomi_core.db import MessageModel
 from tests.conftest import in_memory_session
 from tests.matchers import (
     InstanceOf,

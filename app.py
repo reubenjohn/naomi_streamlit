@@ -2,7 +2,7 @@ import argparse
 import logging
 from dotenv import load_dotenv
 
-from naomi_streamlit.db import initialize_db
+from naomi_core.db import initialize_db
 from naomi_streamlit.home import run
 
 

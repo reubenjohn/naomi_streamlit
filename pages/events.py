@@ -1,5 +1,5 @@
 import streamlit as st
-from naomi_streamlit.db import WebhookEvent, session_scope
+from naomi_core.db import WebhookEvent, session_scope
 
 
 def event_form():
