@@ -3,7 +3,7 @@ builder = "nixpacks"
 buildCommand = "pip install poetry && poetry install --no-root"
 
 [deploy]
-startCommand = "python3 env_to_streamlit_secrets.py .streamlit/secrets.toml && (python3 -m http.server 8090 &) && poetry run streamlit run app.py --server.address 0.0.0.0 --server.port 8088 --server.fileWatcherType none --browser.gatherUsageStats false" # --client.showErrorDetails false
+startCommand = "python3 env_to_streamlit_secrets.py .streamlit/secrets.toml && poetry run streamlit run app.py --server.address 0.0.0.0 --server.port $PORT --server.fileWatcherType none --browser.gatherUsageStats false" # --client.showErrorDetails false
 # healthcheckPath = "/"
 # healthcheckTimeout = 100
 # restartPolicyType = "never"
