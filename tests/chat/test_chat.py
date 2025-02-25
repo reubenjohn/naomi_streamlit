@@ -95,7 +95,7 @@ def test_draw_chat_user_input(
     mock_session_scope.return_value.__enter__.return_value = None
     mock_fetch_messages.return_value = [message_model_1(), message_model_2()]
 
-    def on_add_user_message(message: Message, conversation_id, _):
+    def on_add_user_message(message: Message, _, conversation_id):
         assert message["content"] == "Do you know any jokes?"
         assert conversation_id == DEFAULT_CONVERSATION_ID
         mock_fetch_messages.return_value = [message_model_1(), message_model_2(), message_model_3()]

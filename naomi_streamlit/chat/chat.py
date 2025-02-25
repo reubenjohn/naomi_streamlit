@@ -33,7 +33,7 @@ def draw_chat():
         with st.chat_message("user"):
             st.markdown(prompt)
         with session_scope() as session:
-            add_message_to_db(Message.from_user_input(prompt), DEFAULT_CONVERSATION_ID, session)
+            add_message_to_db(Message.from_user_input(prompt), session, DEFAULT_CONVERSATION_ID)
             with st.chat_message("assistant"):
                 draw_draft_assistant_message(DEFAULT_CONVERSATION_ID, session)
                 st.rerun()
