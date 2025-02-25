@@ -8,7 +8,7 @@ packages = [{include = "naomi_streamlit"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-naomi_core = { git = "https://github.com/reubenjohn/naomi_core.git", rev = "e00e90a458ab246b8d73597c253e751f8b9e33d1" }
+naomi_core = { git = "https://github.com/reubenjohn/naomi_core.git", rev = "main" }
 streamlit = "^1.42.2"
 
 [tool.poetry.group.dev.dependencies]

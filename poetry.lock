@@ -112,7 +112,7 @@ tests-mypy = ["mypy (>=1.11.1)", "pytest-mypy-plugins"]
 
 [[package]]
 name = "Authlib"
-version = "1.4.1"
+version = "1.5.0"
 description = "The ultimate Python library in building OAuth and OpenID Connect servers and clients."
 category = "main"
 optional = false
@@ -738,8 +738,8 @@ swarm = {git = "https://github.com/openai/swarm.git", rev = "9db581cecaacea0d46a
 [package.source]
 type = "git"
 url = "https://github.com/reubenjohn/naomi_core.git"
-reference = "e00e90a458ab246b8d73597c253e751f8b9e33d1"
-resolved_reference = "e00e90a458ab246b8d73597c253e751f8b9e33d1"
+reference = "main"
+resolved_reference = "d651d8dc42803d80ae325a8f088522a4e4797f3c"
 
 [[package]]
 name = "narwhals"
@@ -1279,7 +1279,7 @@ snowflake = ["snowflake-connector-python (>=3.3.0)", "snowflake-snowpark-python[
 [[package]]
 name = "swarm"
 version = "0.1.0"
-description = ""
+description = "A lightweight, stateless multi-agent orchestration framework."
 category = "main"
 optional = false
 python-versions = ">=3.10"
@@ -1450,7 +1450,7 @@ propcache = ">=0.2.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "b1c457d3cf522a138aec73fdabc4cb94403aa32784e64adba54ded50223baead"
+content-hash = "5692adaba8c5f2b5a42f4504d893aca2efcfcd1ece24cc5cbb9dc525982a1333"
 
 [metadata.files]
 aiohappyeyeballs = [
@@ -1565,8 +1565,8 @@ attrs = [
     {file = "attrs-25.1.0.tar.gz", hash = "sha256:1c97078a80c814273a76b2a298a932eb681c87415c11dee0a6921de7f1b02c3e"},
 ]
 Authlib = [
-    {file = "Authlib-1.4.1-py2.py3-none-any.whl", hash = "sha256:edc29c3f6a3e72cd9e9f45fff67fc663a2c364022eb0371c003f22d5405915c1"},
-    {file = "authlib-1.4.1.tar.gz", hash = "sha256:30ead9ea4993cdbab821dc6e01e818362f92da290c04c7f6a1940f86507a790d"},
+    {file = "Authlib-1.5.0-py2.py3-none-any.whl", hash = "sha256:b3cc5ccfc19cf87678046b6e7cb19d402d8a631a33c40e36385232203227953a"},
+    {file = "authlib-1.5.0.tar.gz", hash = "sha256:8fd8bd8f806485a532ac39a17b579982cf54688f956174f995cc938a91725423"},
 ]
 black = [
     {file = "black-24.10.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:e6668650ea4b685440857138e5fe40cde4d652633b1bdffc62933d0db4ed9812"},
