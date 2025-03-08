@@ -177,7 +177,15 @@ pyrightconfig.json
 
 # Streamlit
 .streamlit/secrets.toml
+.streamlit/config.toml
 db.sqlite
 
 # VS Code
 .vscode/
+
+# Local development symlinks and overrides
+/naomi_core
+*.toml.prod
+
+# Uncomment this line if you don't want to commit lock file changes temporarily
+# poetry.lock

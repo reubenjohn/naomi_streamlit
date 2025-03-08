@@ -66,6 +66,47 @@ $ token_world --openai_base_url http://192.168.1.199:11434/v1 --openai_api_key y
 - streamlit run Hello.py
 - open your browser to `http://127.0.0.1:8501`
 
+## Development Setup
+
+### Working with local naomi_core
+
+For streamlined development across both `naomi_streamlit` and `naomi_core` repositories, this project includes a development mode that allows for hot-reloading of changes made to the `naomi_core` codebase.
+
+#### How it works
+
+1. A symbolic link to the `naomi_core` directory is created in this project
+2. The `pyproject.toml` is modified to include this symlinked directory as a package
+3. Streamlit watches this directory and reloads when changes are detected
+4. `.gitignore` is configured to prevent these development-specific changes from being committed
+
+#### Usage
+
+To toggle between development and production modes, use the provided script:
+
+```bash
+# Enable development mode (use local naomi_core)
+poetry run python dev_mode.py on
+
+# Disable development mode (use naomi_core from git)
+poetry run python dev_mode.py off
+```
+
+After switching modes, restart your Streamlit app for changes to take effect.
+
+#### Working with Git
+
+The following files are ignored in `.gitignore` to prevent committing development-specific changes:
+
+- `/naomi_core` - The symlink to local naomi_core
+- `.streamlit/config.toml` - Local Streamlit configuration
+
+#### Reset to production state
+
+If you need to reset to a clean state for committing changes:
+
+1. Run `poetry run python dev_mode.py off` to disable development mode
+2. Run `git status` to ensure there are no unintended changes
+
 ## Learn more
 
 - [The original repository that this template used](https://github.com/streamlit/hello)
