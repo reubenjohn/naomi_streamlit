@@ -1,15 +1,15 @@
 import streamlit as st
 
-from naomi_streamlit.chat.assistant import draw_assistant_message, draw_draft_assistant_message
-from naomi_streamlit.chat.user_input import draw_user_message
-from naomi_core.db import (
+from naomi_core.db.chat import (
     DEFAULT_CONVERSATION_ID,
-    Message,
     MessageModel,
     add_message_to_db,
     fetch_messages,
-    session_scope,
+    Message,
 )
+from naomi_streamlit.chat.assistant import draw_assistant_message, draw_draft_assistant_message
+from naomi_streamlit.chat.user_input import draw_user_message
+from naomi_core.db.core import session_scope
 
 
 def draw_messages(messages: list[MessageModel], session):

@@ -1,7 +1,7 @@
 import logging
 import streamlit as st
 
-from naomi_core.db import (
+from naomi_core.db.chat import (
     MessageModel,
     delete_messages_after,
 )

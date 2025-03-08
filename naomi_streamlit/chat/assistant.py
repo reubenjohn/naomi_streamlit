@@ -3,7 +3,7 @@ from typing import Iterator
 import streamlit as st
 
 from naomi_core.assistant.persistence import generate_and_persist_llm_response
-from naomi_core.db import (
+from naomi_core.db.chat import (
     MessageModel,
     delete_messages_after,
 )

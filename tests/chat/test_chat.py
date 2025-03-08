@@ -1,7 +1,7 @@
 from streamlit.testing.v1 import AppTest
 from unittest.mock import MagicMock, patch
 
-from naomi_core.db import DEFAULT_CONVERSATION_ID, Message
+from naomi_core.db.chat import DEFAULT_CONVERSATION_ID, Message
 from tests.matchers import EqualsMessageModel, InstanceOf
 from tests.data import message_model_1, message_model_2, message_model_3
 

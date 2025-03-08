@@ -24,7 +24,7 @@ def show_llm_regeneration_wrapper():  # pragma: no cover
 
 def draw_assistant_message_wrapper():  # pragma: no cover
     from naomi_streamlit.chat.assistant import draw_assistant_message
-    from naomi_core.db import MessageModel, Message
+    from naomi_core.db.chat import MessageModel, Message
     from tests.conftest import in_memory_session
     import streamlit as st
 
