@@ -1,10 +1,31 @@
-# The `streamlit hello` multipage demo app, on Railway!
+# NAOMI Streamlit
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/nj-Wms?referralCode=ySCnWl)
+## Overview
+NAOMI Streamlit is the user-facing web application built with Streamlit, providing an interface for interacting with NAOMI. It allows users to manage responsibilities, monitor NAOMI's internal thinking, view observations, and track actions in real time.
 
-This project highlights Streamlit's new multipage app functionality. Now deployable directly to Railway!
+## Features
 
-![In-use Animation](https://github.com/streamlit/hello/blob/main/mpa-hero.gif?raw=true "In-use Animation")
+### Currently Implemented
+- **Chat Interface**: Communicate with NAOMI through an intuitive chat-based UI.
+- **Database Integration**: Retrieves and updates data from the shared database.
+
+### Planned Features
+- **Responsibility Management**: Create, modify, and track assigned responsibilities.
+- **Internal Monitoring**: View NAOMI's decision-making process, observations, and event triggers.
+- **Task and Event Tracking**: Keep track of NAOMI's scheduled actions and insights.
+
+## User Guide
+### Accessing the Chat Interface
+- Open the Streamlit app in your browser.
+- Interact with NAOMI through text input.
+
+### Managing Responsibilities
+- Navigate to the Responsibilities tab.
+- Add, modify, or delete assigned tasks.
+
+### Monitoring Internal Insights
+- View NAOMI's decision-making and thought processes in real-time.
+- Track how responsibilities and events influence NAOMI's actions.
 
 ## Project Setup
 
@@ -38,7 +59,6 @@ $ python -m token_world --openai_base_url http://192.168.1.199:11434/v1 --openai
 #or
 $ token_world --openai_base_url http://192.168.1.199:11434/v1 --openai_api_key your_openai_api_key_here
 ```
-
 
 ## How to run this project locally
 
