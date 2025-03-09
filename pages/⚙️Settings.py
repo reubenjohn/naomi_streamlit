@@ -22,9 +22,9 @@ def agent_settings_form(agent: AgentModel, session):
             session.add(agent)
             st.success(f"{agent.name} Agent settings saved")
 
-    st.subheader("Responsibilities")
-    new_responsibility_form(agent, session)
     responsibilities = load_responsibilities_from_db(agent, session)
+    st.subheader(f"Responsibilities ({len(responsibilities)})")
+    new_responsibility_form(agent, session)
     for responsibility in responsibilities:
         responsibility_form(responsibility, session)
 
@@ -46,7 +46,7 @@ def new_responsibility_form(agent: AgentModel, session):
 
 
 def responsibility_form(responsibility: AgentResponsibilityModel, session):
-    with st.expander(str(responsibility.name)):
+    with st.expander(str(responsibility.name), expanded=False):
         with st.form(
             key=f"{responsibility.name}_responsibility_settings", clear_on_submit=True, border=False
         ):
@@ -62,6 +62,22 @@ def responsibility_form(responsibility: AgentResponsibilityModel, session):
             st.rerun()
 
 
+def show_database_tab():
+    if st.button("💀 Wipe database"):
+        wipe_db()
+        st.success("Database wiped")
+        st.rerun()
+    st.subheader("Tables")
+    st.table(get_all_tables())
+
+
+def show_agents_tab():
+    with session_scope() as session:
+        for agent in get_all_agents(session):
+            agent_settings_form(agent, session)
+            st.divider()
+
+
 def show_settings():
     st.set_page_config(
         page_title="NAOMI Settings",
@@ -75,17 +91,10 @@ def show_settings():
     (agents_tab, db_tab) = st.tabs(["🤖 Agents", "💿 Database"])
 
     with db_tab:
-        if st.button("💀 Wipe database"):
-            wipe_db()
-            st.success("Database wiped")
-            st.rerun()
-        st.subheader("Tables")
-        st.table(get_all_tables())
+        show_database_tab()
 
     with agents_tab:
-        with session_scope() as session:
-            for agent in get_all_agents(session):
-                agent_settings_form(agent, session)
+        show_agents_tab()
 
 
 show_settings()
